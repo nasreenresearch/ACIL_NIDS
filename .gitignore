@@ -1,0 +1,9 @@
+Data/
+results/
+.DS_Store
+*.csv
+*.xlsx
+*.png
+*.jpeg
+*.jpg
+*.ipynb_checkpoints/
