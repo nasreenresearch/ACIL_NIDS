@@ -1,5 +1,3 @@
-Data/
-results/
 .DS_Store
 *.csv
 *.xlsx
@@ -7,3 +5,5 @@ results/
 *.jpeg
 *.jpg
 *.ipynb_checkpoints/
+Data_full/
+results_full/
