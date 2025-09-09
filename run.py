@@ -23,7 +23,6 @@ from datasets.cicids2018 import load_cicids2018
 from datasets.nslkdd import load_nslkdd
 from strategies.cbrs import CBRSBuffer
 from strategies.papa import PAPAPlugin  # you can keep selector=None for now
-from strategies.srr import SRRBuffer
 
 
 def load_ds(name, train_path, test_path):
@@ -49,7 +48,7 @@ def main():
     ap.add_argument(
         "--strategy",
         required=True,
-        choices=["naive", "replay", "ewc", "gem", "lwf", "cumulative", "cbrs", "papa","srr"],
+        choices=["naive", "replay", "ewc", "gem", "lwf", "cumulative", "cbrs", "papa"],
     )
     ap.add_argument("--mem_size", type=int, default=2000)
     ap.add_argument("--epochs", type=int, default=5)
@@ -117,14 +116,6 @@ def main():
             mem_size=args.mem_size, train_epochs=args.epochs,
             extra_plugins=extra_plugins,
         )
-    elif args.strategy == "srr":
-        srr = SRRBuffer(args.mem_size, scoring="loss", temperature=1.0)  # or "entropy"/"margin"
-        extra_plugins = [ReplayPlugin(mem_size=args.mem_size, storage_policy=srr)]
-        strategy = make_strategy(
-        "replay", model, opt, criterion, device,
-        mem_size=args.mem_size, train_epochs=args.epochs,
-        extra_plugins=extra_plugins,
-    )
     else:
         strategy = make_strategy(
             args.strategy, model, opt, criterion, device,
