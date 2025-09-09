@@ -1,14 +1,7 @@
-# Continual NIDS (ACIL Benchmark Framework)
+## Continual NIDS (ACIL Benchmark Framework)
 
-
-# Continual Learning Benchmark Framework for NIDS
-
-This repository provides a benchmark framework for evaluating continual learning (CL) strategies in the context of network intrusion detection systems (NIDS). 
+This repository provides a benchmark framework for evaluating continual learning (CL) strategies in the context of network intrusion detection systems (NIDS).
 The supported datasets are CICIDS2017, CICIDS2018, and NSL-KDD.
-
----
-
-## Project Structure
 
 CL_ANIDS/
 ├─ run.py                        # Entry point to run a single experiment
@@ -19,7 +12,7 @@ CL_ANIDS/
 │  └─ auto_train.py              # Automate experiments across datasets/strategies
 ├─ benchmarks/
 │  └─ make_benchmark.py          # Class-incremental benchmark builder
-├─ datasets/ # Loader for Datasets
+├─ datasets/                     # Loader for Datasets
 │  ├─ cicids2017.py
 │  ├─ cicids2018.py
 │  └─ nslkdd.py                  
@@ -30,13 +23,9 @@ CL_ANIDS/
 │  ├─ cbrs.py
 │  └─ papa.py
 └─ Data/                         # All dataset CSVs here
-```
 
----
-
-## 1. Environment Setup
-
-## Install
+1. Environment Setup
+# Install
 cd CL_ANIDS
 python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
 pip install --upgrade pip
@@ -45,14 +34,9 @@ pip install --upgrade pip
 pip install torch torchvision torchaudio
 pip install avalanche-lib pandas numpy scikit-learn matplotlib xlsxwriter tqdm
 
-
----
-
-## 2. Dataset Preparation
-
-Place the dataset CSVs under the `Data/` directory (or specify custom paths):
-
-```
+   
+2. Dataset Preparation
+Place the dataset CSVs under the Data/ directory (or specify custom paths):
 Data/
 ├─ CICIDS2017_train.csv
 ├─ CICIDS2017_test.csv
@@ -60,63 +44,45 @@ Data/
 ├─ CICIDS2018_test.csv
 ├─ KDDTrain.csv
 └─ KDDTest.csv
-```
+The nslkdd.py loader automatically detects categorical columns, scales numerical features, and ensures consistent label encoding between training and test sets.
 
-The `nslkdd.py` loader automatically detects categorical columns, scales numerical features, and ensures consistent label encoding between training and test sets.
+3. Running an Experiment
 
----
-
-## 3. Running an Experiment
-
-### Example: GEM on CICIDS2017
-
-python run.py   --dataset cicids2017   --train Data/CICIDS2017_train.csv   --test  Data/CICIDS2017_test.csv   --strategy gem   --epochs 5   --mem_size 2000   --seed 1   --outdir results
-
-### Example: Replay on NSL-KDD
-python run.py   --dataset nslkdd   --train Data/KDDTrain.csv   --test  Data/KDDTest.csv   --strategy replay   --epochs 5   --mem_size 2000   --seed 1   --outdir results
-
+Example: GEM on CICIDS2017
+# python run.py   --dataset cicids2017   --train Data/CICIDS2017_train.csv   --test  Data/CICIDS2017_test.csv   --strategy gem   --epochs 5   --mem_size 2000   --seed 1   --outdir results
+Example: Replay on NSL-KDD
+# python run.py   --dataset nslkdd   --train Data/KDDTrain.csv   --test  Data/KDDTest.csv   --strategy replay   --epochs 5   --mem_size 2000   --seed 1   --outdir results
 By default, the benchmark uses a fixed class order sorted by descending frequency in the training set.
 
----
-
-## 4. Summarizing Results
-
-After a run, Avalanche writes logs into a directory such as `results/gem_cicids2017.csv/`.
-
+4. Summarizing Results
+After a run, Avalanche writes logs into a directory such as results/gem_cicids2017.csv/.
 Summarize the raw logs:
-
 python tools/summarize_metrics.py results/gem_cicids2017.csv
 
-This creates:
+# This creates:
+eval_results_summary.xlsx
+eval_results_accuracy_per_experience.csv
+eval_results_forgetting_per_experience.csv
+eval_results_bwt_per_experience.csv
 
-- `eval_results_summary.xlsx`
-- `eval_results_accuracy_per_experience.csv`
-- `eval_results_forgetting_per_experience.csv`
-- `eval_results_bwt_per_experience.csv`
-
----
-
-## 5. Plotting Results
-
-### Accuracy per experience (single run)
+5. Plotting Results
+Accuracy per experience (single run)
 python tools/plot_metrics.py   results/gem_cicids2017.csv/eval_results_accuracy_per_experience.csv   "GEM on CIC-IDS-2017: Accuracy per Experience"
 
-### Compare strategies
-1. Combine results:
+Compare strategies
+
+Combine results:
 python tools/combine_runs.py   results/gem_cicids2017.csv/eval_results_accuracy_per_experience.csv   results/ewc_cicids2017.csv/eval_results_accuracy_per_experience.csv   results/replay_cicids2017.csv/eval_results_accuracy_per_experience.csv
 
-2. Plot comparison:
+Plot comparison:
 python tools/plot_combined.py results/combined_accuracy_per_experience.csv   "CIC-IDS-2017: Accuracy per Experience (GEM vs EWC vs Replay)"
 
 
-## 6. Automating Multiple Runs
-
+6. Automating Multiple Runs
 To run several strategies in one go, use:
-
 python -m tools.auto_train   --datasets cicids2017   --train Data/CICIDS2017_train.csv   --test  Data/CICIDS2017_test.csv   --strategies gem ewc replay   --epochs 5 --mem_size 2000 --seed 1   --outdir results
 
-This creates:
-
+# This creates:
 results/
 └─ cicids2017/
    ├─ gem/
@@ -126,14 +92,25 @@ results/
    ├─ ewc/
    └─ replay/
 
----
+# 7. Notes
 
-## 7. Notes
+Replay buffer size is set with --mem_size.
 
-- Replay buffer size is set with `--mem_size`.
-- For CBRS: use `--strategy cbrs`.
-- For PAPA: use `--strategy papa` (requires `strategies/papa.py`).
-- Logs are reproducible with `--seed`.
-- Each automated run also saves a `config.json` with all parameters.
+For CBRS: use --strategy cbrs.
 
----
+For PAPA: use --strategy papa (requires strategies/papa.py).
+
+Logs are reproducible with --seed.
+
+Each automated run also saves a config.json with all parameters. 
+
+# Additional Details:
+
+# Supported Strategies:
+| Strategy                                      | Description                                                                                      |
+| --------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| **Replay**                                    | Stores a subset of past samples in memory and replays them during training to reduce forgetting. |
+| **GEM (Gradient Episodic Memory)**            | Constrains gradient updates to avoid increasing loss on previous tasks.                          |
+| **EWC (Elastic Weight Consolidation)**        | Uses Fisher information to regularize important weights and preserve old knowledge.              |
+| **CBRS (Class-Balanced Reservoir Sampling)**  | Maintains a balanced memory buffer across classes to ensure fair replay.                         |
+| **PAPA (Parameter-Allocation Per-Attribute)** | Dynamically allocates parameters per task/attribute for better knowledge retention.              |
