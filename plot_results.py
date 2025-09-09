@@ -16,8 +16,7 @@ def plot_accuracy_per_task(csv_paths, labels, outfile):
 plot_accuracy_per_task(
     ["results/replay_cicids2017.csv", 
      "results/gem_cicids2017.csv",
-     "results/cbrs_cicids2017.csv",
-     "results/srr_cicids2017.csv"],
-    ["Replay", "GEM", "CBRS", "SRR (ours)"],
+     "results/cbrs_cicids2017.csv"],
+    ["Replay", "GEM", "CBRS"],
     "figures/accuracy_per_task.pdf"
 )
